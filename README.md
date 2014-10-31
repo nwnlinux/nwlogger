@@ -1,4 +1,1 @@
-nwlogger
-========
-
-NWN Linux Logging
+nwlogger.README.txt

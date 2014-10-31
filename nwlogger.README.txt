@@ -1,0 +1,126 @@
+Various bits of public info:
+
+This is a _CLIENT_SIDE_ logging package for NWN & Linux.  It is supposed to 
+log all of the data that appears in the chat log window.  It also logs
+one or two other things that sometimes don't get logged that I think should. 
+(You can tell those lines as they're tagged with a 'NWL:' at the front.) 
+
+There is nwnplayer.ini/[Game Options]/ClientEntireChatWindowLogging=1
+setting that may make this project obsolete, however, I still keep it around 
+for umm..umm... no good reason. <shrug>
+
+This is very much a kludge. (IMHO)  With the actual source, I'm sure I could
+do better, but as I'm not a Bioware employee, I find that highly unlikely.
+
+Standard Legal Shtuff:
+
+I do not guarentee this to work on any computer, except my own.   If it
+should some how allow all the magic smoke to escape your computer, well
+tough.  You were warned.   Avoid swimming for at least three hours after
+using this product.
+
+What little bit of this that is copyrightable is copywritten by David Holland
+david.w.holland@gmail.com.   You may do what you wish with this code so long as
+some credit is given to me, and the copyright is maintained.
+
+If someone would like to send me better installation instructions, I'll
+gladly update the package with them.   Along with any code
+updates.
+
+Flames will be redirected to /dev/null.   As will testy bug reports.
+Friendly bug reports will be examined as time permits.
+
+----> enough disclaimers <----
+
+Things required:
+gcc, Perl, & libelf, including development headers.
+
+If building on x86_64, you will need the 32bit development 
+libraries.
+
+1) Unpack the tarball in your NWN directory.
+
+2) execute ./nwlogger_install.pl
+
+3) modify your 'nwn' startup script to include the
+following line:
+
+export LD_PRELOAD=./nwlogger.so
+
+   before executing nwmain
+
+   If your using nwmovies, the line should look something like so: 
+
+export LD_PRELOAD=./nwmovies.so:./nwlogger.so
+
+4) You may wish to do something similar for the 
+   dmclient startup script.
+
+5) Enjoy.. (mostly - See the known issues below)
+
+6) There is a bit of a log file in nwlogger.log and nwlogger_save.log. 
+   You may wish to modify your nwn startup script to remove them
+   occasionally.
+
+----> Known Issues <-----
+
+None.  Yet. 
+
+
+----> Bits of internal documentation <----
+
+01/23/08
+
+Updated for x86_64, and verified to work on 1.68, and 1.69b2
+
+My thanks to Eyrdan, and Skildron on the NWN forums for there help
+getting this to work on x86_64.
+
+01/23/08 END
+
+Heavily based up on the nwmovies code. 
+
+The ~nwn/nwlogger.log file is the "in progress" log file.
+
+The nwlogger.log file is a raw dump of the "Chat" window log string.  It has 
+binary bits in it.  
+
+Per 'Evil Penguin' on the Linux forums the binary bits
+are a color code.  <cRGB> starts a change of color, and </c> ends it
+
+R, G, and B, are single characters, which represent the respective color value.
+
+White appears to be the default. 
+
+There is a bit of a "stack" concept to the color codes.    
+(FYI - these are not example codes - Just a stack example)
+
+<c 'red'><c 'blue'>Blue Text</c>Red text</c>White text. 
+
+The enclosed 'log2html.pl' given a filename, treats the file as a 
+nwlogger.log file, and converts the chatlog into HTML on standard out. 
+
+The field in front of a log line is the fields of a 'struct tm', in the 
+following order. 
+
+tm_ptr->tm_year + 1900,			Year
+tm_ptr->tm_mon + 1,			Month
+tm_ptr->tm_mday,			Day of the Month
+tm_ptr->tm_hour,			Hour
+tm_ptr->tm_min,				Minute
+tm_ptr->tm_sec,				Second
+tm_ptr->tm_wday,			Day of the Week
+tm_ptr->tm_yday,			Day of the Year. 
+tm_ptr->tm_isdst 			Is it DayLight Savings? 
+
+./nwlogger.pl is called with a single argument when you go to save your game.
+said argument is the directory where the files that make up your
+save game is. 
+
+Loading a save game does NOT whack a in progress game log.  If you wish
+it to uncomment the call to ftruncate() inside of nwlogger.c / NWLogger_write_load_log(), 
+and rebuild. 
+
+David Holland
+01/23/08
+david.w.holland@gmail.com
