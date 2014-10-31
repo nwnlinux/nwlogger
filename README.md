@@ -1,0 +1,4 @@
+nwlogger
+========
+
+NWN Linux Logging
